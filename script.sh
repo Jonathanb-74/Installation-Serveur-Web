@@ -30,18 +30,30 @@ while [ -z $fin ]; do
 			;;
 		"2")
 			# clear
-			packets=("nginx" "php-fpm" "mariadb-server")
+			packetsInstal=("nginx" "php-fpm" "mariadb-server" "phpmyadmin")
+			packetsService=("nginx" "php7.*" "mysql" "phpmyadmin")
 
-			for i in "${packets[@]}"
+			for (( i = 0; i < 4; i++ ))
 			do
 			   : 
-				INSTALLED=$(dpkg -l | grep ${i} >/dev/null && echo "\e[92m OUI" || echo "\e[91m NON")
+				INSTALLED=$(dpkg -l | grep ${packetsInstal[$i]} >/dev/null && echo "OUI" || echo "NON")
+				STATUS=$(systemctl status ${packetsService[$i]} | grep "Active")
+				if [[ ${packetsService[$i]} != "phpmyadmin" ]]; then
+					status="$status> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n    Status: ${STATUS}\n\n"
+				else
+					status="$status> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n\n"
+				fi
+      
 
-				echo -e " > ${i} \t| Installé: ${INSTALLED}\e[39m"
 			done
+				echo -e "$status" > test_textbox
+
+			# echo "Welcome to Bash $BASH_VERSION" > test_textbox
+			#                  filename height width
+			whiptail --title "Etats des services"  --textbox test_textbox 25 80
 			
-			echo -e "\n"
-			read -p "Selectionnez [Enter] pour retourner au menu..."
+			# echo -e "\n"
+			# read -p "Selectionnez [Enter] pour retourner au menu..."
 			;;
 		"3")
 
