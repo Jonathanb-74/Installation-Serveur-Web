@@ -46,9 +46,10 @@ while [ -z $fin ]; do
 		"3")
 
 			packetsInstallation=$(whiptail --title "Installation du serveur web" --cancel-button "Retour au menu" --ok-button "Valider" --checklist \
-				"Selectionnez les composants à installer" 15 60 4 \
+				"Selectionnez les composants à installer" 15 60 5 \
+				UPDATE "Update des sources" ON \
 				NGINX "Serveur web" OFF \
-				PHP-FPM "Serveur PHP" ON \
+				PHP-FPM "Serveur PHP" OFF \
 				MariaDB-Server "Serveur SQL" OFF \
 				phpMyAdmin "Interface web de gestion de BDD" OFF 3>&1 1>&2 2>&3)
 			 
@@ -63,12 +64,20 @@ while [ -z $fin ]; do
 				for iInstall in ${packetsInstallation[@]}
 				do
 					echo $iInstall
-					if [[ $iInstall = '"NGINX"' ]]; then
+					if [[ $iInstall = '"UPDATE"' ]]; then
+						clear
+						echo -e "\e[92m*********************************************\e[0m"
+						echo -e "\t \e[5mUPDATE DES SOURCES"
+						echo -e "\e[92m*********************************************\e[0m"
+						apt update -y
+						read -p "Selectionnez [Enter] pour continuer..."
+					elif [[ $iInstall = '"NGINX"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Installation de: \e[5mNGINX"
 						echo -e "\e[92m*********************************************\e[0m"
 						apt install -y nginx
+						read -p "Selectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"PHP-FPM"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
@@ -79,26 +88,31 @@ while [ -z $fin ]; do
 						echo -e "\t Informations de: \e[5mPHP-FPM"
 						echo -e "\e[92m*********************************************\e[0m"
 						php -v
+						read -p "Selectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"MariaDB-Server"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Installation de: \e[5mMariaDB-Server"
 						echo -e "\e[92m*********************************************\e[0m"
 						apt install -y mariadb-server
-					elif [[ $iInstall = '"phpMyAdmin"' ]]; then
+						read -p "Selectionnez [Enter] pour continuer..."
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
-						echo -e "\t Installation de: \e[5mNphpMyAdmin"
+						echo -e "\t Configuration de: \e[5mMariaDB-Server"
 						echo -e "\e[92m*********************************************\e[0m"
-						apt install -y phpmyadmin
-					else
-        				echo "NON"
+						mysql_secure_installation
+						read -p "Selectionnez [Enter] pour continuer..."
+					elif [[ $iInstall = '"phpMyAdmin"' ]]; then
+						if (whiptail --title "phpMyAdmin" --yesno --defaultno --no-button "Revenir au menu" --yes-button "Continuer"  "ATTENTION: avant d'installer phpMyAdmin, vous devez avoir installé \"mariadb-server\". Si vous n'avez PAS installé mariadb-server, sélectionnez \"Revenir au menu\" pour retourner au menu principale, sinon, sélectionnez \"Continuer\"" 12 60) then
+							clear
+							echo -e "\e[92m*********************************************\e[0m"
+							echo -e "\t Installation de: \e[5mNphpMyAdmin"
+							echo -e "\e[92m*********************************************\e[0m"
+							apt install -y phpmyadmin
+							read -p "Selectionnez [Enter] pour continuer..."
+						fi
 					fi
-
-					read -p "Selectionnez [Enter] pour continuer..."
 				done
-			else
-			    echo "Vous avez annulé"
 			fi
 			;;
 		"4")
