@@ -1,4 +1,4 @@
 {
 	"nginx_conf_all": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/templates/nginx_template",
-	"nginx_conf_pma": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/templates/nginx_template"
+	"nginx_conf_pma": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/templates/phpmyadmin_template"
 }
