@@ -1,0 +1,23 @@
+server {
+    listen [pma_port]; 
+    listen [::]:[pma_port]; 
+
+    server_name _;
+
+    root /usr/share/phpmyadmin;
+    index index.php index.html;
+
+    location /
+    {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$
+    {
+        include snippets/fastcgi-php.conf;
+        # With php-fpm (or other unix sockets): 
+        fastcgi_pass unix:/var/run/php/php[pma_php_version]-fpm.sock;
+        # With php-cgi (or other tcp sockets): 
+        #fastcgi_pass 127.0.0.1:9000;
+    }
+}
