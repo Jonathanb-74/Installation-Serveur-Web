@@ -11,21 +11,31 @@ while [ -z $fin ]; do
 
 	# clear
 
-	OPTION=$(whiptail --title "MENU" --cancel-button Fermer --ok-button Valider  --menu "Choisissez une action" 15 60 5 \
+	OPTION=$(whiptail --title "MENU" --cancel-button Fermer --ok-button Valider  --menu "Choisissez une action" 20 70 6 \
 	"1" "Informations" \
 	"2" "Etats des services" \
 	"3" "Installation des services web" \
 	"4" "Création d'un site web" \
-	"5" "Redémarrage des services" 3>&1 1>&2 2>&3)
+	"5" "Gestion des sites web" \
+	"6" "Redémarrage des services" 3>&1 1>&2 2>&3)
 	 
 	getURL(){
-		# https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/url.json
 		if [[ -n $1 ]]; then
 			# templateURL="ok"
 			templateURL=$(curl -s https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/url.json | jq .$1)
 			templateURL=${templateURL:1:-1}
 		fi
 	}
+	# siteON(){
+	# 	if [[ -n $1 ]]; then
+			
+	# 	fi
+	# }
+	# siteOFF(){
+	# 	if [[ -n $1 ]]; then
+			
+	# 	fi
+	# }
 
 	case $OPTION in
 		"1")
@@ -65,9 +75,9 @@ while [ -z $fin ]; do
 		"3")
 
 			packetsInstallation=$(whiptail --title "Installation du serveur web" --cancel-button "Retour au menu" --ok-button "Valider" --checklist \
-				"Selectionnez les composants à installer" 18 80 5 \
-				Autre "Extracteur JSON, curl (obligatoire pour la configuration des site)" ON \
+				"Selectionnez les composants à installer" 18 80 6 \
 				UPDATE "Update des sources" ON \
+				Autre "Extracteur JSON, curl (obligatoire pour la configuration des site)" ON \
 				NGINX "Serveur web" OFF \
 				PHP-FPM "Serveur PHP" OFF \
 				MariaDB-Server "Serveur SQL" OFF \
@@ -104,6 +114,10 @@ while [ -z $fin ]; do
 						echo -e "\t Installation de: \e[5mNGINX"
 						echo -e "\e[92m*********************************************\e[0m"
 						apt install -y nginx
+						echo -e "Suppression des fichiers de configurations par défaur..."
+						rm "/etc/nginx/sites-available/*"
+						rm "/etc/nginx/sites-enabled/*"
+
 						read -p "Selectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"PHP-FPM"' ]]; then
 						clear
@@ -136,6 +150,32 @@ while [ -z $fin ]; do
 							echo -e "\t Installation de: \e[5mNphpMyAdmin"
 							echo -e "\e[92m*********************************************\e[0m"
 							apt install -y phpmyadmin
+							read -p "Selectionnez [Enter] pour continuer..."
+
+							clear
+							echo -e "\e[92m*********************************************\e[0m"
+							echo -e "\t Configuration de: \e[5mNphpMyAdmin"
+							echo -e "\e[92m*********************************************\e[0m"
+
+							getURL "nginx_conf_pma"
+							wget $templateURL -O "/etc/nginx/sites-available/phpmyadmin"
+
+							pmaPort=$(whiptail --inputbox "Saisissez le port de connexion à phpMyAdmin. (Par défaut: 8080)." 8 39 8080 --title "Port phpMyAdmin" 3>&1 1>&2 2>&3)
+
+							exitstatus=$?
+							if [ $exitstatus != 0 ]; then
+							    pmaPort="8080"
+							fi
+
+							recherche=( "pma_port" "pma_php_version" )
+							remplace=( "$pmaPort" "$hoteVersionPHP" )
+
+							for (( i = 0; i < 4; i++ )); do
+								#statements
+								echo "sed -i 's/\[${recherche[$i]}\]/${remplace[$i]}/g' /etc/nginx/sites-available/phpmyadmin"
+								sed -i "s/\[${recherche[$i]}\]/${remplace[$i]}/g" /etc/nginx/sites-available/phpmyadmin
+							done
+
 							read -p "Selectionnez [Enter] pour continuer..."
 						fi
 					fi
@@ -220,16 +260,6 @@ while [ -z $fin ]; do
 				# BDD - MDP = $siteBddMDP2
 				# BDD - Connexion = $siteBddConnexion
 
-				# verifyuser() {
-				#     if grep "$1" /etc/passwd > /dev/null
-				#     then
-				# 		userExiste="oui"
-				#     else
-				# 		userExiste="non"
-				#     fi
-				# }
-				# verifyuser $siteNom
-
 				if [[ $siteConf = ok ]]; then
 
 					if [[ -e "/etc/nginx/sites-available/$siteNom" ]]; then
@@ -289,26 +319,92 @@ while [ -z $fin ]; do
 								echo -e "Le rep home/html à bien été créer"
 							fi
 							chown "$siteNom:www-data" "/home/$siteNom/html"
-						fi
-						
-						if [[ $siteConfBDD = ok ]]; then	
 
-							if [[ $siteBddConnexion = 2 ]]; then
-								siteBddConnexion="%"
-							else
-								siteBddConnexion="localhost"
+							if [[ $siteConfBDD = ok ]]; then	
+
+								if [[ $siteBddConnexion = 2 ]]; then
+									siteBddConnexion="%"
+								else
+									siteBddConnexion="localhost"
+								fi
+
+								mysql -u root -e "CREATE USER $siteBddNom@'$siteBddConnexion' IDENTIFIED BY '$siteBddMDP';"
+								mysql -u root -e "GRANT USAGE ON *.* TO $siteBddNom@'$siteBddConnexion' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;"
+								mysql -u root -e "CREATE DATABASE IF NOT EXISTS $siteBddNom;"
+								mysql -u root -e "GRANT ALL PRIVILEGES ON $siteBddNom.* TO $siteBddNom@'$siteBddConnexion';"
 							fi
 
-							mysql -u root -e "CREATE USER $siteBddNom@'$siteBddConnexion' IDENTIFIED BY '$siteBddMDP';"
-							mysql -u root -e "GRANT USAGE ON *.* TO $siteBddNom@'$siteBddConnexion' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;"
-							mysql -u root -e "CREATE DATABASE IF NOT EXISTS $siteBddNom;"
-							mysql -u root -e "GRANT ALL PRIVILEGES ON $siteBddNom.* TO $siteBddNom@'$siteBddConnexion';"
 						fi
+						
+						whiptail --title "Terminé" --msgbox "La configuration de votre site est maintenant terminée." 8 78
 
 					fi
 				fi
 			fi
 			read -p "Selectionnez [Enter] pour continuer..."
+			;;
+		"5")
+			function contains() {
+			    local n=$#
+			    local value=${!n}
+			    for ((i=1;i < $#;i++)) {
+			        if [ "${!i}" == "${value}" ]; then
+			            echo "y"
+			            return 0
+			        fi
+			    }
+			    echo "n"
+			    return 1
+			}
+
+			i=0
+			while read line
+			do
+			    available[$i]="$line"        
+			    (( i++ ))
+			done < <(ls -1 /etc/nginx/sites-available)
+
+			j=0
+			while read line
+			do
+			    enabled[$j]="$line"        
+			    (( j++ ))
+			done < <(ls -1 /etc/nginx/sites-enabled)
+
+			listeID=0
+			for i in "${available[@]}"
+			do
+				: 
+				# echo $i
+				# echo ${enabled[$1]}
+				if [[ $(contains "${enabled[@]}" "$i") == "y" ]]; then
+					# echo "$i est activé !"
+					listeSite[$listeID]="$i"
+					echo ${listeSite[$listeID]}
+					(( listeID++ ))
+					listeSite[$listeID]="..."
+					echo ${listeSite[$listeID]}
+					(( listeID++ ))
+					listeSite[$listeID]="ON"
+					echo ${listeSite[$listeID]}
+					(( listeID++ ))
+				else
+					listeSite[$listeID]="$i"
+					echo ${listeSite[$listeID]}
+					(( listeID++ ))
+					listeSite[$listeID]="..."
+					echo ${listeSite[$listeID]}
+					(( listeID++ ))
+					listeSite[$listeID]="OFF"
+					echo ${listeSite[$listeID]}
+					(( listeID++ ))
+				fi
+				echo $listID
+			done
+
+			whiptail --title "Check list example" --checklist "Choose user's permissions" 20 78 4 "${listeSite[@]}"
+
+			# read -p "Selectionnez [Enter] pour continuer..."
 			;;
 		*)
 			fin=1
