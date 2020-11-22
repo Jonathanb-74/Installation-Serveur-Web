@@ -18,11 +18,14 @@ while [ -z $fin ]; do
 	"4" "Création d'un site web" \
 	"5" "Redémarrage des services" 3>&1 1>&2 2>&3)
 	 
-	# exitstatus=$?
-	# if [ $exitstatus != 0 ]; then
-	#     # echo "Vous avez choisi la distribution : " $OPTION
-	#     echo "vous avez annulé"
-	# fi
+	getURL(){
+		# https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/url.json
+		if [[ -n $1 ]]; then
+			# templateURL="ok"
+			templateURL=$(curl -s https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/url.json | jq .$1)
+			templateURL=${templateURL:1:-1}
+		fi
+	}
 
 	case $OPTION in
 		"1")
@@ -38,10 +41,14 @@ while [ -z $fin ]; do
 			   : 
 				INSTALLED=$(dpkg -l | grep ${packetsInstal[$i]} >/dev/null && echo "OUI" || echo "NON")
 				STATUS=$(systemctl status ${packetsService[$i]} | grep "Active")
-				if [[ ${packetsService[$i]} != "phpmyadmin" ]]; then
-					status="$status> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n    Status: ${STATUS}\n\n"
-				else
+				if [[ ${packetsInstal[$i]} = "phpmyadmin" ]]; then
 					status="$status> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n\n"
+				elif [[ ${packetsInstal[$i]} = "php-fpm" ]]; then
+					#statements
+					VERSION=$(php -v | grep "PHP")
+					status="$status> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n    Status: ${STATUS}\n    Installé: ${VERSION}\n\n"
+				else
+					status="$status> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n    Status: ${STATUS}\n\n"
 				fi
       
 
@@ -58,7 +65,8 @@ while [ -z $fin ]; do
 		"3")
 
 			packetsInstallation=$(whiptail --title "Installation du serveur web" --cancel-button "Retour au menu" --ok-button "Valider" --checklist \
-				"Selectionnez les composants à installer" 15 60 5 \
+				"Selectionnez les composants à installer" 18 80 5 \
+				Autre "Extracteur JSON, curl (obligatoire pour la configuration des site)" ON \
 				UPDATE "Update des sources" ON \
 				NGINX "Serveur web" OFF \
 				PHP-FPM "Serveur PHP" OFF \
@@ -82,6 +90,13 @@ while [ -z $fin ]; do
 						echo -e "\t \e[5mUPDATE DES SOURCES"
 						echo -e "\e[92m*********************************************\e[0m"
 						apt update -y
+						read -p "Selectionnez [Enter] pour continuer..."
+					elif [[ $iInstall = '"Autre"' ]]; then
+						clear
+						echo -e "\e[92m*********************************************\e[0m"
+						echo -e "\t Installation de: \e[5mJQ"
+						echo -e "\e[92m*********************************************\e[0m"
+						apt install -y jq, curl
 						read -p "Selectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"NGINX"' ]]; then
 						clear
@@ -128,14 +143,175 @@ while [ -z $fin ]; do
 			fi
 			;;
 		"4")
-			echo "Selection: 4"
+			if (whiptail --title "Création d'un site web" --yesno "Voulez-vous vraiment lancer l'utilitaire de création d'un site web ?" 8 78); then
+			    siteNom=$(whiptail --inputbox "Saisissez le nom d'utilisateur associé au site (sans espaces)." 8 39 --title "Nom d'utilisateur" 3>&1 1>&2 2>&3)
+				exitstatus=$?
+				if [ $exitstatus = 0 ]; then
+					mdpOK="NON"
+					while [ $mdpOK != OUI ]
+					do
+					    siteMDP=$(whiptail --passwordbox "Saisissez le mot de passe associé au compte utilisateur du site." 8 78 --title "Mot de passe utilisateur" 3>&1 1>&2 2>&3)
+						exitstatus=$?
+						siteMDP2=$(whiptail --passwordbox "Ressaisissez le mot de passe." 8 78 --title "Mot de passe utilisateur" 3>&1 1>&2 2>&3)
+						exitstatus2=$?
+						if [[ $siteMDP = $siteMDP2 ]]; then
+							mdpOK="OUI"
+						else
+							echo -e "Les mots de passe ne correspondent pas. Veuillez ressaisir les mots de passe." > test_textbox
+							whiptail --textbox test_textbox 20 80
+						fi
+					done
+					if [[ $exitstatus = 0 && $exitstatus2 = 0 ]]; then
+						sitePort=$(whiptail --inputbox "Saisissez le port assosié à votre site. (Par défaut: 80)." 8 39 --title "Port" 3>&1 1>&2 2>&3)
+						exitstatus=$?
+						if [ $exitstatus = 0 ]; then
+							siteDomaine=$(whiptail --inputbox "Saisissez le domaine assosié à votre site. Si vous n'en avez pas laissez la case vide." 8 39 --title "Domaine" 3>&1 1>&2 2>&3)
+							exitstatus=$?
+							if [ $exitstatus = 0 ]; then
+								hoteVersionPHP=$(php -v | grep "PHP")
+								hoteVersionPHP=${hoteVersionPHP:4:3}
+								siteVersionPHP=$(whiptail --inputbox "Vous pouvez modifier ici la version de PHP à utiliser." 8 39 $hoteVersionPHP --title "Version de PHP" 3>&1 1>&2 2>&3)
+								exitstatus=$?
+								if [ $exitstatus = 0 ]; then
+									if (whiptail --title "BDD" --yesno "Souhaitez vous configurer une BDD ?" 8 78); then
+									    siteBddNom=$(whiptail --inputbox "Le nom par défaut de votre BDD est le nom de votre site. Vous pouvez le changer ici." 8 39 $siteNom  --title "Example Dialog" 3>&1 1>&2 2>&3)
+										exitstatus=$?
+										if [ $exitstatus = 0 ]; then
+											mdpOK="NON"
+											while [ $mdpOK != OUI ]
+											do
+											    siteBddMDP=$(whiptail --passwordbox "Saisissez le mot de passe assicié à votre BDD" 8 78 --title "Mot de passe BDD" 3>&1 1>&2 2>&3)
+												exitstatus=$?
+												siteBddMDP2=$(whiptail --passwordbox "Ressaisissez le mot de passe." 8 78 --title "Mot de passe utilisateur" 3>&1 1>&2 2>&3)
+												exitstatus2=$?
+												if [[ $siteBddMDP = $siteBddMDP2 ]]; then
+													mdpOK="OUI"
+												else
+													echo -e "Les mots de passe ne correspondent pas. Veuillez ressaisir les mots de passe." > test_textbox
+													whiptail --textbox test_textbox 20 80
+												fi
+											done
+											if [ $exitstatus = 0 ]; then
+											    siteBddConnexion=$(whiptail --title "Autorisation de connexion à la BDD" --nocancel --ok-button Valider  --menu "Choisissez une action" 15 60 5 \
+												"1" "localhost" \
+												"2" "%" 3>&1 1>&2 2>&3)
+												exitstatus=$?
+												if [ $exitstatus = 0 ]; then
+												    siteConfBDD="ok"
+													siteConf="ok"
+												fi
+											fi
+										fi
+									else
+										siteConf="ok"
+									fi
+								fi
+							fi
+						fi
+					fi
+				fi
+				# Nom du site = $siteNom
+				# Mot de passe = $siteMDP
+				# Mot de passe = $siteMDP2
+				# Domaine = $siteDomaine
+				# Version de PHP = $siteVersionPHP
+				# BDD - Nom = $siteBddNom
+				# BDD - MDP = $siteBddMDP
+				# BDD - MDP = $siteBddMDP2
+				# BDD - Connexion = $siteBddConnexion
+
+				# verifyuser() {
+				#     if grep "$1" /etc/passwd > /dev/null
+				#     then
+				# 		userExiste="oui"
+				#     else
+				# 		userExiste="non"
+				#     fi
+				# }
+				# verifyuser $siteNom
+
+				if [[ $siteConf = ok ]]; then
+
+					if [[ -e "/etc/nginx/sites-available/$siteNom" ]]; then
+
+						echo -e "Le fichier  existe déjà !"
+						echo -e "Fin du processus d'installation du site"
+
+					elif [[ -n $(grep "$siteNom" /etc/passwd) ]]; then
+
+						echo -e "L'utilisateur existe déjà !"
+						echo -e "Fin du processus d'installation du site"
+
+					else
+						getURL "nginx_conf_all"
+
+						# echo $templateURL
+
+						wget $templateURL -O "/etc/nginx/sites-available/$siteNom"
+
+						if [[ -e "/etc/nginx/sites-available/$siteNom" && -r "/etc/nginx/sites-available/$siteNom" ]]; then
+							echo -e "Le fichier à bien été créer\n"
+
+							read -p "Selectionnez [Enter] pour continuer..."
+
+							echo -e "Modification du fichier...\n"
+
+							if [[ -z $sitePort ]]; then
+								sitePort="80"
+							fi
+							if [[ -z $siteDomaine ]]; then
+								siteDomaine="_"
+							fi
+
+							recherche=( "conf_serveur_port" "conf_user" "conf_domaine" "conf_php_version" )
+							remplace=( "$sitePort" "$siteNom" "$siteDomaine" "$siteVersionPHP" )
+
+							for (( i = 0; i < 4; i++ )); do
+								#statements
+								echo "sed -i 's/\[${recherche[$i]}\]/${remplace[$i]}/g' /etc/nginx/sites-available/$siteNom"
+								sed -i "s/\[${recherche[$i]}\]/${remplace[$i]}/g" /etc/nginx/sites-available/$siteNom
+							done
+
+							testGroupManagement=$(getent group scriptManagement || { echo "0"; })
+
+							if [[ $testGroupManagement = 0 ]]; then
+								groupadd "scriptManagement"
+							fi
+
+							useradd -m -p $(echo "$siteMDP" | openssl passwd -1 -stdin) -s /bin/bash -g "www-data" -G "scriptManagement" "$siteNom"
+							# adduser "$siteNom" "www-data"
+							if [[ -e "/home/$siteNom" ]]; then
+								echo -e "Le rep home à bien été créer"
+							fi
+
+							mkdir "/home/$siteNom/html"
+							if [[ -e "/home/$siteNom/html" ]]; then
+								echo -e "Le rep home/html à bien été créer"
+							fi
+							chown "$siteNom:www-data" "/home/$siteNom/html"
+						fi
+						
+						if [[ $siteConfBDD = ok ]]; then	
+
+							if [[ $siteBddConnexion = 2 ]]; then
+								siteBddConnexion="%"
+							else
+								siteBddConnexion="localhost"
+							fi
+
+							mysql -u root -e "CREATE USER $siteBddNom@'$siteBddConnexion' IDENTIFIED BY '$siteBddMDP';"
+							mysql -u root -e "GRANT USAGE ON *.* TO $siteBddNom@'$siteBddConnexion' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;"
+							mysql -u root -e "CREATE DATABASE IF NOT EXISTS $siteBddNom;"
+							mysql -u root -e "GRANT ALL PRIVILEGES ON $siteBddNom.* TO $siteBddNom@'$siteBddConnexion';"
+						fi
+
+					fi
+				fi
+			fi
+			read -p "Selectionnez [Enter] pour continuer..."
 			;;
 		*)
 			fin=1
 			;;
 	esac
-	
-
 done
-
-# clear
