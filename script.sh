@@ -344,67 +344,132 @@ while [ -z $fin ]; do
 			read -p "Selectionnez [Enter] pour continuer..."
 			;;
 		"5")
-			function contains() {
-			    local n=$#
-			    local value=${!n}
-			    for ((i=1;i < $#;i++)) {
-			        if [ "${!i}" == "${value}" ]; then
-			            echo "y"
-			            return 0
-			        fi
-			    }
-			    echo "n"
-			    return 1
-			}
+			finConfSites="0"
 
-			i=0
-			while read line
-			do
-			    available[$i]="$line"        
-			    (( i++ ))
-			done < <(ls -1 /etc/nginx/sites-available)
+			while [[ $finConfSites = "0" ]]; do
+				function contains() {
+				    local n=$#
+				    local value=${!n}
+				    for ((i=1;i < $#;i++)) {
+				        if [ "${!i}" == "${value}" ]; then
+				            echo "y"
+				            return 0
+				        fi
+				    }
+				    echo "n"
+				    return 1
+				}
 
-			j=0
-			while read line
-			do
-			    enabled[$j]="$line"        
-			    (( j++ ))
-			done < <(ls -1 /etc/nginx/sites-enabled)
+				hash -r
+				listeSite=""
 
-			listeID=0
-			for i in "${available[@]}"
-			do
-				: 
-				# echo $i
-				# echo ${enabled[$1]}
-				if [[ $(contains "${enabled[@]}" "$i") == "y" ]]; then
-					# echo "$i est activé !"
-					listeSite[$listeID]="$i"
-					echo ${listeSite[$listeID]}
-					(( listeID++ ))
-					listeSite[$listeID]="..."
-					echo ${listeSite[$listeID]}
-					(( listeID++ ))
-					listeSite[$listeID]="ON"
-					echo ${listeSite[$listeID]}
-					(( listeID++ ))
+				i=0
+				while read line
+				do
+				    available[$i]="$line"        
+				    (( i++ ))
+				done < <(ls -1 /etc/nginx/sites-available)
+
+				j=0
+				while read line
+				do
+				    enabled[$j]="$line"        
+				    (( j++ ))
+				done < <(ls -1 /etc/nginx/sites-enabled)
+
+				listeID=0
+				for i in "${available[@]}"
+				do
+					: 
+					# echo $i
+					# echo ${enabled[$1]}
+					if [[ $(contains "${enabled[@]}" "$i") == "y" ]]; then
+						# echo "$i est activé !"
+						listeSite[$listeID]="$i"
+						echo ${listeSite[$listeID]}
+						(( listeID++ ))
+						listeSite[$listeID]="..."
+						echo ${listeSite[$listeID]}
+						(( listeID++ ))
+						listeSite[$listeID]="ON"
+						echo ${listeSite[$listeID]}
+						(( listeID++ ))
+					else
+						listeSite[$listeID]="$i"
+						echo ${listeSite[$listeID]}
+						(( listeID++ ))
+						listeSite[$listeID]="..."
+						echo ${listeSite[$listeID]}
+						(( listeID++ ))
+						listeSite[$listeID]="OFF"
+						echo ${listeSite[$listeID]}
+						(( listeID++ ))
+					fi
+					echo $listID
+				done
+
+				SiteManagement=$(whiptail --title "Check list example" --checklist "Choose user's permissions" 20 78 4 "${listeSite[@]}" 3>&1 1>&2 2>&3)
+
+				# packetsInstallation=$(whiptail --title "Installation du serveur web" --cancel-button "Retour au menu" --ok-button "Valider" --checklist \
+				# 	"Selectionnez les composants à installer" 18 80 6 \
+				# 	UPDATE "Update des sources" ON \
+				# 	Autre "Extracteur JSON, curl (obligatoire pour la configuration des site)" ON \
+				# 	NGINX "Serveur web" OFF \
+				# 	PHP-FPM "Serveur PHP" OFF \
+				# 	MariaDB-Server "Serveur SQL" OFF \
+				# 	phpMyAdmin "Interface web de gestion de BDD" OFF 3>&1 1>&2 2>&3)
+				 
+				exitstatus=$?
+				if [ $exitstatus = 0 ]; then
+
+					# echo ${SiteManagement[@]}
+
+					clear
+
+					for siteExiste in ${available[@]}
+					do
+						echo -e "\n\n\n\n************************\n\n\n"
+						
+						coche=""
+						for saisie in ${SiteManagement[@]}
+						do
+							saisie=${saisie:1:-1}
+							echo -e "Site existe: $siteExiste  --  Site à conf $saisie"
+							if [[ -z $coche ]]; then
+								if [[ $siteExiste = $saisie ]]; then
+									coche="oui"
+									echo -e "$siteExiste - OUI\n"
+								fi
+							fi
+						done
+
+						echo	-e "$coche\n"
+
+
+						fichier="/etc/nginx/sites-enabled/${siteExiste}"
+
+						if [[ $coche = "oui" ]]; then
+							if [[ -e ${fichier} ]]; then
+								echo -e "Le fichier $siteExiste existe"
+							else
+								echo -e "Le fichier $siteExiste n'existe pas. On le créer"
+								ln -s /etc/nginx/sites-available/${siteExiste} /etc/nginx/sites-enabled/${siteExiste}
+							fi
+						else
+							if [[ -e ${fichier} ]]; then
+								echo -e "Le fichier $siteExiste existe. On le supprime."
+								rm "/etc/nginx/sites-enabled/${siteExiste}"
+							else
+								echo -e "Le fichier $siteExiste n'existe pas"
+							fi
+						fi
+					done
 				else
-					listeSite[$listeID]="$i"
-					echo ${listeSite[$listeID]}
-					(( listeID++ ))
-					listeSite[$listeID]="..."
-					echo ${listeSite[$listeID]}
-					(( listeID++ ))
-					listeSite[$listeID]="OFF"
-					echo ${listeSite[$listeID]}
-					(( listeID++ ))
+					finConfSites="1"
 				fi
-				echo $listID
+
+				# read -p "Selectionnez [Enter] pour continuer..."
 			done
-
-			whiptail --title "Check list example" --checklist "Choose user's permissions" 20 78 4 "${listeSite[@]}"
-
-			# read -p "Selectionnez [Enter] pour continuer..."
 			;;
 		*)
 			fin=1
