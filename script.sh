@@ -106,7 +106,7 @@ while [ -z $fin ]; do
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Installation de: \e[5mJQ"
 						echo -e "\e[92m*********************************************\e[0m"
-						apt install -y jq curl
+						apt install -y jq, curl
 						read -p "Selectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"NGINX"' ]]; then
 						clear
