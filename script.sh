@@ -39,7 +39,7 @@ while [ -z $fin ]; do
 
 	case $OPTION in
 		"1")
-			whiptail --title "INFORMATIONS" --ok-button "Retour au menu" --msgbox "Script par Jonathan BREA. \nGitHub: https://github.com/Jonathanb-74" 8 78
+			whiptail --title "INFORMATIONS" --ok-button "Retour au menu" --msgbox "Script par Jonathan BREA. \nGitHub: https://github.com/Jonathanb-74 \nSite web: https://jonathan-brea.fr" 8 78
 			;;
 		"2")
 			# clear
@@ -74,12 +74,12 @@ while [ -z $fin ]; do
 			whiptail --title "Etats des services" --ok-button "Retour au menu" --textbox tmpFile 25 80
 			
 			# echo -e "\n"
-			# read -p "Selectionnez [Enter] pour retourner au menu..."
+			# read -p "Sélectionnez [Enter] pour retourner au menu..."
 			;;
 		"3")
 
 			packetsInstallation=$(whiptail --title "Installation du serveur web" --cancel-button "Retour au menu" --ok-button "Valider" --checklist \
-				"Selectionnez les composants à installer" 18 100 6 \
+				"Sélectionnez les composants à installer" 18 100 6 \
 				UPDATE "Update des sources" ON \
 				Autre "Extracteur JSON, curl (obligatoire pour la configuration des site)" ON \
 				NGINX "Serveur web" OFF \
@@ -104,14 +104,14 @@ while [ -z $fin ]; do
 						echo -e "\t \e[5mUPDATE DES SOURCES"
 						echo -e "\e[92m*********************************************\e[0m"
 						apt update -y
-						read -p "Selectionnez [Enter] pour continuer..."
+						read -p "Sélectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"Autre"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Installation de: \e[5mJQ"
 						echo -e "\e[92m*********************************************\e[0m"
 						apt install -y jq curl
-						read -p "Selectionnez [Enter] pour continuer..."
+						read -p "Sélectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"NGINX"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
@@ -122,7 +122,7 @@ while [ -z $fin ]; do
 						rm "/etc/nginx/sites-available/*"
 						rm "/etc/nginx/sites-enabled/*"
 
-						read -p "Selectionnez [Enter] pour continuer..."
+						read -p "Sélectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"PHP-FPM"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
@@ -133,20 +133,20 @@ while [ -z $fin ]; do
 						echo -e "\t Informations de: \e[5mPHP-FPM"
 						echo -e "\e[92m*********************************************\e[0m"
 						php -v
-						read -p "Selectionnez [Enter] pour continuer..."
+						read -p "Sélectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"MariaDB-Server"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Installation de: \e[5mMariaDB-Server"
 						echo -e "\e[92m*********************************************\e[0m"
 						apt install -y mariadb-server
-						read -p "Selectionnez [Enter] pour continuer..."
+						read -p "Sélectionnez [Enter] pour continuer..."
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Configuration de: \e[5mMariaDB-Server"
 						echo -e "\e[92m*********************************************\e[0m"
 						mysql_secure_installation
-						read -p "Selectionnez [Enter] pour continuer..."
+						read -p "Sélectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"phpMyAdmin"' ]]; then
 						if (whiptail --title "phpMyAdmin" --yesno --defaultno --no-button "Revenir au menu" --yes-button "Continuer"  "ATTENTION: avant d'installer phpMyAdmin, vous devez avoir installé \"mariadb-server\". Si vous n'avez PAS installé mariadb-server, sélectionnez \"Revenir au menu\" pour retourner au menu principale, sinon, sélectionnez \"Continuer\"" 12 60) then
 							clear
@@ -154,7 +154,7 @@ while [ -z $fin ]; do
 							echo -e "\t Installation de: \e[5mNphpMyAdmin"
 							echo -e "\e[92m*********************************************\e[0m"
 							apt install -y phpmyadmin
-							read -p "Selectionnez [Enter] pour continuer..."
+							read -p "Sélectionnez [Enter] pour continuer..."
 
 							clear
 							echo -e "\e[92m*********************************************\e[0m"
@@ -180,7 +180,7 @@ while [ -z $fin ]; do
 								sed -i "s/\[${recherche[$i]}\]/${remplace[$i]}/g" /etc/nginx/sites-available/phpmyadmin
 							done
 
-							read -p "Selectionnez [Enter] pour continuer..."
+							read -p "Sélectionnez [Enter] pour continuer..."
 						fi
 					fi
 				done
@@ -286,7 +286,7 @@ while [ -z $fin ]; do
 						if [[ -e "/etc/nginx/sites-available/$siteNom" && -r "/etc/nginx/sites-available/$siteNom" ]]; then
 							echo -e "Le fichier à bien été créer\n"
 
-							read -p "Selectionnez [Enter] pour continuer..."
+							read -p "Sélectionnez [Enter] pour continuer..."
 
 							echo -e "Modification du fichier...\n"
 
@@ -351,7 +351,7 @@ while [ -z $fin ]; do
 					fi
 				fi
 			fi
-			read -p "Selectionnez [Enter] pour continuer..."
+			read -p "Sélectionnez [Enter] pour continuer..."
 			;;
 		"5")
 			finConfSites="0"
@@ -422,7 +422,7 @@ while [ -z $fin ]; do
 
 				# SiteManagement=$(whiptail --title "Gestion des sites" --checklist "Cette interface vous permet d'activer " 20 90 15  3>&1 1>&2 2>&3)
 				SiteManagement=$(whiptail --title "Gestion des sites" --cancel-button "Retour au menu" --ok-button "Valider" --checklist \
-					"Selectionnez les composants à installer" 18 100 6 \
+					"Cette interface vous permet d'activer ou non un site. Cochez la case associée à un site pour l'activer et décochez-la pour le désactiver. Après les modifications effectuées et validées, vous devez redémarrer le service NGINX. ATTENTION: ce script ne vérifie pas la configuration des sites, en fonction de leurs configurations (port + domaine), deux sites peuvent rentrer en conflits, ce qui peut faire apparaitre des comportements indésirables." 18 100 6 \
 					"${listeSite[@]}" 3>&1 1>&2 2>&3)
 				 
 				exitstatus=$?
@@ -475,7 +475,7 @@ while [ -z $fin ]; do
 					finConfSites="1"
 				fi
 
-				# read -p "Selectionnez [Enter] pour continuer..."
+				# read -p "Sélectionnez [Enter] pour continuer..."
 			done
 			;;
 		"6")
@@ -492,13 +492,13 @@ while [ -z $fin ]; do
 				if [ $exitstatus = 0 ]; then
 					if [[ $restartService = "1" ]]; then
 						service nginx restart
-						# read -p "Selectionnez [Enter] pour continuer..."
+						# read -p "Sélectionnez [Enter] pour continuer..."
 					elif [[ $restartService = "2" ]]; then
 						service php* restart
-						# read -p "Selectionnez [Enter] pour continuer..."
+						# read -p "Sélectionnez [Enter] pour continuer..."
 					elif [[ $restartService = "3" ]]; then
 						service mysql restart
-						# read -p "Selectionnez [Enter] pour continuer..."
+						# read -p "Sélectionnez [Enter] pour continuer..."
 					fi
 				else
 					restartServiceLoop="1"
