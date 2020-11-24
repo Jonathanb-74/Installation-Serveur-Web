@@ -106,7 +106,7 @@ while [ -z $fin ]; do
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Installation de: \e[5mJQ"
 						echo -e "\e[92m*********************************************\e[0m"
-						apt install -y jq, curl
+						apt install -y jq curl
 						read -p "Selectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"NGINX"' ]]; then
 						clear
@@ -318,7 +318,12 @@ while [ -z $fin ]; do
 							if [[ -e "/home/$siteNom/html" ]]; then
 								echo -e "Le rep home/html à bien été créer"
 							fi
-							chown "$siteNom:www-data" "/home/$siteNom/html"
+
+							wget $templateURL -O "/home/$siteNom/html/maintenance.html"
+							if [[ -e "/home/$siteNom/html/maintenance.html" ]]; then
+								echo -e "La page maintenance.html à été ajouter au repertoire"
+							fi
+							chown -R "$siteNom:www-data" "/home/$siteNom/html"
 
 							if [[ $siteConfBDD = ok ]]; then	
 
@@ -361,7 +366,9 @@ while [ -z $fin ]; do
 				}
 
 				hash -r
-				listeSite=""
+				unset listeSite
+				unset available
+				unset enabled
 
 				i=0
 				while read line
@@ -408,7 +415,7 @@ while [ -z $fin ]; do
 					echo $listID
 				done
 
-				SiteManagement=$(whiptail --title "Check list example" --checklist "Choose user's permissions" 20 78 4 "${listeSite[@]}" 3>&1 1>&2 2>&3)
+				SiteManagement=$(whiptail --title "Check list example" --checklist "Choose user's permissions" 20 78 6 "${listeSite[@]}" 3>&1 1>&2 2>&3)
 
 				# packetsInstallation=$(whiptail --title "Installation du serveur web" --cancel-button "Retour au menu" --ok-button "Valider" --checklist \
 				# 	"Selectionnez les composants à installer" 18 80 6 \
@@ -469,6 +476,33 @@ while [ -z $fin ]; do
 				fi
 
 				# read -p "Selectionnez [Enter] pour continuer..."
+			done
+			;;
+		"6")
+			restartServiceLoop="0"
+
+			while [[ $restartServiceLoop = "0" ]]; do
+				
+				restartService=$(whiptail --title "Redémarrage des services" --cancel-button Fermer --ok-button Valider  --menu "Choisissez un service à redémarrer" 20 70 6 \
+					"1" "NGINX" \
+					"2" "PHP" \
+					"3" "MySQL" 3>&1 1>&2 2>&3)
+
+				exitstatus=$?
+				if [ $exitstatus = 0 ]; then
+					if [[ $restartService = "1" ]]; then
+						service nginx restart
+						# read -p "Selectionnez [Enter] pour continuer..."
+					elif [[ $restartService = "2" ]]; then
+						service php* restart
+						# read -p "Selectionnez [Enter] pour continuer..."
+					elif [[ $restartService = "3" ]]; then
+						service mysql restart
+						# read -p "Selectionnez [Enter] pour continuer..."
+					fi
+				else
+					restartServiceLoop="1"
+				fi
 			done
 			;;
 		*)
