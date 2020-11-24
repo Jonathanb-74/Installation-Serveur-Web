@@ -3,7 +3,7 @@
 # $erreurSelection=0
 
 if [[ $(whoami) != 'root' ]]; then
-	whiptail --title "ATTENTION" --msgbox "Certaines fonctionnalitées de ce script nécéssite les droits root. Pour profiter de toutes les fonctionnalitées de ce script, executez le avec la commande sudo ou avec l'utilisateur root" 15 78
+	whiptail --title "ATTENTION" --msgbox "Certaines fonctionnalitées de ce script nécéssite les droits root. Pour profiter de toutes les fonctionnalitées de ce script, executez le avec la commande sudo ou avec l'utilisateur root" 11 78
 fi
 
 
