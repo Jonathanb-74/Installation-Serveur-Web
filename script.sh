@@ -67,11 +67,11 @@ while [ -z $fin ]; do
       
 
 			done
-				echo -e "$statusVar" > $test_textbox
+				echo -e "$statusVar" > tmpFile
 
-			# echo "Welcome to Bash $BASH_VERSION" > test_textbox
+			# echo "Welcome to Bash $BASH_VERSION" > tmpFile
 			#                  filename height width
-			whiptail --title "Etats des services"  --textbox $test_textbox 25 80
+			whiptail --title "Etats des services"  --textbox tmpFile 25 80
 			
 			# echo -e "\n"
 			# read -p "Selectionnez [Enter] pour retourner au menu..."
@@ -201,8 +201,8 @@ while [ -z $fin ]; do
 						if [[ $siteMDP = $siteMDP2 ]]; then
 							mdpOK="OUI"
 						else
-							echo -e "Les mots de passe ne correspondent pas. Veuillez ressaisir les mots de passe." > $test_textbox
-							whiptail --textbox $test_textbox 20 80
+							echo -e "Les mots de passe ne correspondent pas. Veuillez ressaisir les mots de passe." > tmpFile
+							whiptail --textbox tmpFile 20 80
 						fi
 					done
 					if [[ $exitstatus = 0 && $exitstatus2 = 0 ]]; then
@@ -231,8 +231,8 @@ while [ -z $fin ]; do
 												if [[ $siteBddMDP = $siteBddMDP2 ]]; then
 													mdpOK="OUI"
 												else
-													echo -e "Les mots de passe ne correspondent pas. Veuillez ressaisir les mots de passe." > $test_textbox
-													whiptail --textbox $test_textbox 20 80
+													echo -e "Les mots de passe ne correspondent pas. Veuillez ressaisir les mots de passe." > tmpFile
+													whiptail --textbox tmpFile 20 80
 												fi
 											done
 											if [ $exitstatus = 0 ]; then
@@ -514,3 +514,8 @@ while [ -z $fin ]; do
 			;;
 	esac
 done
+
+if [[ -e tmpFile ]]; then
+	echo -e "le fichier existe"
+	read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+fi
