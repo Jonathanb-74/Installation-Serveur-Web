@@ -420,7 +420,10 @@ while [ -z $fin ]; do
 					echo $listID
 				done
 
-				SiteManagement=$(whiptail --title "Gestion des sites" --checklist "Cette interface vous permet d'activer " 20 100 15 "${listeSite[@]}" 3>&1 1>&2 2>&3)
+				# SiteManagement=$(whiptail --title "Gestion des sites" --checklist "Cette interface vous permet d'activer " 20 90 15  3>&1 1>&2 2>&3)
+				SiteManagement=$(whiptail --title "Gestion des sites" --cancel-button "Retour au menu" --ok-button "Valider" --checklist \
+					"Selectionnez les composants à installer" 18 100 6 \
+					"${listeSite[@]}" 3>&1 1>&2 2>&3)
 				 
 				exitstatus=$?
 				if [ $exitstatus = 0 ]; then
