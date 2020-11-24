@@ -454,6 +454,7 @@ while [ -z $fin ]; do
 						if [[ $coche = "oui" ]]; then
 							if [[ -e ${fichier} ]]; then
 								# echo -e "Le fichier $siteExiste existe"
+								echo -e ""
 							else
 								# echo -e "Le fichier $siteExiste n'existe pas. On le créer"
 								ln -s /etc/nginx/sites-available/${siteExiste} /etc/nginx/sites-enabled/${siteExiste}
