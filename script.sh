@@ -514,9 +514,9 @@ fi
 
 clear
 
-echo -e "\e[92m**************************************************"
-echo -e "    \e[92mScript par Jonathan BREA"
-echo -e "    \e[92mGitHib: https://github.com/Jonathanb-74"
-echo -e "    \e[92mSite web: https://jonathan-brea.fr"
-echo -e "\e[92m**************************************************"
+echo -e "\e[92m**************************************************\e[39m"
+echo -e "    \e[92mScript par \e[39mJonathan BREA"
+echo -e "    \e[92mGitHib:\e[39m https://github.com/Jonathanb-74"
+echo -e "    \e[92mSite web: \e[39mhttps://jonathan-brea.fr"
+echo -e "\e[92m**************************************************\e[39m"
 echo -e "\n\n\n"
