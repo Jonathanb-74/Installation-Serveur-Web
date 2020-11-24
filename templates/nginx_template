@@ -4,7 +4,7 @@ server {
 
 	root /home/[conf_user]/html;
 
-	index index.php index.html index.htm index.nginx-debian.html;
+	index index.php index.html index.htm maintenance.html index.nginx-debian.html;
 
 	server_name [conf_domaine];
 
