@@ -10,7 +10,6 @@ Ce script à été testé sur Ubuntu 20.04
 Téléchargement du script
 
     wget -q --no-cache --no-cookies https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/script.sh
-```wget -q --no-cache --no-cookies https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/script.sh```
 
 Autorisation de l’exécution
 
