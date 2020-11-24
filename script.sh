@@ -322,7 +322,8 @@ while [ -z $fin ]; do
 							if [[ -e "/home/$siteNom/html" ]]; then
 								echo -e "Le rep home/html à bien été créer"
 							fi
-
+							
+							getURL "html_maintenance"
 							wget $templateURL -O "/home/$siteNom/html/maintenance.html"
 							if [[ -e "/home/$siteNom/html/maintenance.html" ]]; then
 								echo -e "La page maintenance.html à été ajouter au repertoire"
