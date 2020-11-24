@@ -11,7 +11,7 @@ while [ -z $fin ]; do
 
 	# clear
 
-	OPTION=$(whiptail --title "MENU" --cancel-button Fermer --ok-button Valider  --menu "Choisissez une action" 20 70 6 \
+	OPTION=$(whiptail --title "MENU" --cancel-button "Quiter" --ok-button Valider  --menu "Choisissez une action" 20 70 6 \
 	"1" "Informations" \
 	"2" "Etats des services" \
 	"3" "Installation des services web" \
@@ -420,7 +420,7 @@ while [ -z $fin ]; do
 					echo $listID
 				done
 
-				SiteManagement=$(whiptail --title "Gestion des sites" --cancel-button "Retour au menu" --ok-button "Valider" --checklist "Cette interface vous permet d'activer ou non un site. Cochez la case associée à un site pour l'activer et décochez-la pour le désactiver. Après les modifications effectuées et validées, vous devez redémarrer le service NGINX. ATTENTION: ce script ne vérifie pas la configuration des sites, en fonction de leurs configurations (port + domaine), deux sites peuvent rentrer en conflits, ce qui peut faire apparaitre des comportements indésirables." 20 78 15 "${listeSite[@]}" 3>&1 1>&2 2>&3)
+				SiteManagement=$(whiptail --title "Gestion des sites" --checklist "Cette interface vous permet d'activer " --cancel-button "Retour au menu" --ok-button "Valider" 20 100 15 "${listeSite[@]}" 3>&1 1>&2 2>&3)
 				 
 				exitstatus=$?
 				if [ $exitstatus = 0 ]; then
