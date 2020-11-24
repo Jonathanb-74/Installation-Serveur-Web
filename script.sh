@@ -39,7 +39,7 @@ while [ -z $fin ]; do
 
 	case $OPTION in
 		"1")
-			whiptail --title "INFORMATIONS" --msgbox "Script par Jonathan BREA. \nGitHub: Jonathanb-74" 8 78
+			whiptail --title "INFORMATIONS" --ok-button "Retour au menu" --msgbox "Script par Jonathan BREA. \nGitHub: https://github.com/Jonathanb-74" 8 78
 			;;
 		"2")
 			# clear
@@ -71,7 +71,7 @@ while [ -z $fin ]; do
 
 			# echo "Welcome to Bash $BASH_VERSION" > tmpFile
 			#                  filename height width
-			whiptail --title "Etats des services"  --textbox tmpFile 25 80
+			whiptail --title "Etats des services" --ok-button "Retour au menu" --textbox tmpFile 25 80
 			
 			# echo -e "\n"
 			# read -p "Selectionnez [Enter] pour retourner au menu..."
@@ -79,7 +79,7 @@ while [ -z $fin ]; do
 		"3")
 
 			packetsInstallation=$(whiptail --title "Installation du serveur web" --cancel-button "Retour au menu" --ok-button "Valider" --checklist \
-				"Selectionnez les composants à installer" 18 80 6 \
+				"Selectionnez les composants à installer" 18 100 6 \
 				UPDATE "Update des sources" ON \
 				Autre "Extracteur JSON, curl (obligatoire pour la configuration des site)" ON \
 				NGINX "Serveur web" OFF \
@@ -187,16 +187,16 @@ while [ -z $fin ]; do
 			fi
 			;;
 		"4")
-			if (whiptail --title "Création d'un site web" --yesno "Voulez-vous vraiment lancer l'utilitaire de création d'un site web ?" 8 78); then
-			    siteNom=$(whiptail --inputbox "Saisissez le nom d'utilisateur associé au site (sans espaces)." 8 39 --title "Nom d'utilisateur" 3>&1 1>&2 2>&3)
+			if (whiptail --title "Création d'un site web" --yes-button "OUI" --no-button "NON, Retour au menu" --yesno "Voulez-vous vraiment lancer l'utilitaire de création d'un site web ?" 8 78); then
+			    siteNom=$(whiptail --inputbox "Saisissez le nom d'utilisateur associé au site (sans espaces)." 8 39 --title "Nom d'utilisateur" --ok-button "Valider" --nocancel 3>&1 1>&2 2>&3)
 				exitstatus=$?
 				if [ $exitstatus = 0 ]; then
 					mdpOK="NON"
 					while [ $mdpOK != OUI ]
 					do
-					    siteMDP=$(whiptail --passwordbox "Saisissez le mot de passe associé au compte utilisateur du site." 8 78 --title "Mot de passe utilisateur" 3>&1 1>&2 2>&3)
+					    siteMDP=$(whiptail --passwordbox "Saisissez le mot de passe associé au compte utilisateur du site." --ok-button "Valider" --nocancel 8 78 --title "Mot de passe utilisateur" 3>&1 1>&2 2>&3)
 						exitstatus=$?
-						siteMDP2=$(whiptail --passwordbox "Ressaisissez le mot de passe." 8 78 --title "Mot de passe utilisateur" 3>&1 1>&2 2>&3)
+						siteMDP2=$(whiptail --passwordbox "Ressaisissez le mot de passe." --ok-button "Valider" --nocancel 8 78 --title "Mot de passe utilisateur" 3>&1 1>&2 2>&3)
 						exitstatus2=$?
 						if [[ $siteMDP = $siteMDP2 ]]; then
 							mdpOK="OUI"
@@ -206,27 +206,27 @@ while [ -z $fin ]; do
 						fi
 					done
 					if [[ $exitstatus = 0 && $exitstatus2 = 0 ]]; then
-						sitePort=$(whiptail --inputbox "Saisissez le port assosié à votre site. (Par défaut: 80)." 8 39 --title "Port" 3>&1 1>&2 2>&3)
+						sitePort=$(whiptail --inputbox "Saisissez le port assosié à votre site. (Par défaut: 80)." --ok-button "Valider" --nocancel 8 39 --title "Port" 3>&1 1>&2 2>&3)
 						exitstatus=$?
 						if [ $exitstatus = 0 ]; then
-							siteDomaine=$(whiptail --inputbox "Saisissez le domaine assosié à votre site. Si vous n'en avez pas laissez la case vide." 8 39 --title "Domaine" 3>&1 1>&2 2>&3)
+							siteDomaine=$(whiptail --inputbox "Saisissez le domaine assosié à votre site. Si vous n'en avez pas laissez la case vide." --ok-button "Valider" --nocancel 8 39 --title "Domaine" 3>&1 1>&2 2>&3)
 							exitstatus=$?
 							if [ $exitstatus = 0 ]; then
 								hoteVersionPHP=$(php -v | grep "PHP")
 								hoteVersionPHP=${hoteVersionPHP:4:3}
-								siteVersionPHP=$(whiptail --inputbox "Vous pouvez modifier ici la version de PHP à utiliser." 8 39 $hoteVersionPHP --title "Version de PHP" 3>&1 1>&2 2>&3)
+								siteVersionPHP=$(whiptail --inputbox "Vous pouvez modifier ici la version de PHP à utiliser." --ok-button "Valider" --nocancel 8 39 $hoteVersionPHP --title "Version de PHP" 3>&1 1>&2 2>&3)
 								exitstatus=$?
 								if [ $exitstatus = 0 ]; then
 									if (whiptail --title "BDD" --yesno "Souhaitez vous configurer une BDD ?" 8 78); then
-									    siteBddNom=$(whiptail --inputbox "Le nom par défaut de votre BDD est le nom de votre site. Vous pouvez le changer ici." 8 39 $siteNom  --title "Example Dialog" 3>&1 1>&2 2>&3)
+									    siteBddNom=$(whiptail --inputbox "Le nom par défaut de votre BDD est le nom de votre site. Vous pouvez le changer ici." --ok-button "Valider" --nocancel 8 39 $siteNom  --title "Example Dialog" 3>&1 1>&2 2>&3)
 										exitstatus=$?
 										if [ $exitstatus = 0 ]; then
 											mdpOK="NON"
 											while [ $mdpOK != OUI ]
 											do
-											    siteBddMDP=$(whiptail --passwordbox "Saisissez le mot de passe assicié à votre BDD" 8 78 --title "Mot de passe BDD" 3>&1 1>&2 2>&3)
+											    siteBddMDP=$(whiptail --passwordbox "Saisissez le mot de passe assicié à votre BDD" --ok-button "Valider" --nocancel 8 78 --title "Mot de passe BDD" 3>&1 1>&2 2>&3)
 												exitstatus=$?
-												siteBddMDP2=$(whiptail --passwordbox "Ressaisissez le mot de passe." 8 78 --title "Mot de passe utilisateur" 3>&1 1>&2 2>&3)
+												siteBddMDP2=$(whiptail --passwordbox "Ressaisissez le mot de passe." --ok-button "Valider" --nocancel 8 78 --title "Mot de passe utilisateur" 3>&1 1>&2 2>&3)
 												exitstatus2=$?
 												if [[ $siteBddMDP = $siteBddMDP2 ]]; then
 													mdpOK="OUI"
@@ -322,7 +322,7 @@ while [ -z $fin ]; do
 							if [[ -e "/home/$siteNom/html" ]]; then
 								echo -e "Le rep home/html à bien été créer"
 							fi
-							
+
 							getURL "html_maintenance"
 							wget $templateURL -O "/home/$siteNom/html/maintenance.html"
 							if [[ -e "/home/$siteNom/html/maintenance.html" ]]; then
@@ -346,7 +346,7 @@ while [ -z $fin ]; do
 
 						fi
 						
-						whiptail --title "Terminé" --msgbox "La configuration de votre site est maintenant terminée." 8 78
+						whiptail --title "Terminé" --ok-button "Retour au menu" --msgbox "La configuration de votre site est maintenant terminée." 8 78
 
 					fi
 				fi
@@ -420,16 +420,7 @@ while [ -z $fin ]; do
 					echo $listID
 				done
 
-				SiteManagement=$(whiptail --title "Check list example" --checklist "Choose user's permissions" 20 78 6 "${listeSite[@]}" 3>&1 1>&2 2>&3)
-
-				# packetsInstallation=$(whiptail --title "Installation du serveur web" --cancel-button "Retour au menu" --ok-button "Valider" --checklist \
-				# 	"Selectionnez les composants à installer" 18 80 6 \
-				# 	UPDATE "Update des sources" ON \
-				# 	Autre "Extracteur JSON, curl (obligatoire pour la configuration des site)" ON \
-				# 	NGINX "Serveur web" OFF \
-				# 	PHP-FPM "Serveur PHP" OFF \
-				# 	MariaDB-Server "Serveur SQL" OFF \
-				# 	phpMyAdmin "Interface web de gestion de BDD" OFF 3>&1 1>&2 2>&3)
+				SiteManagement=$(whiptail --title "Gestion des sites web" --checklist --cancel-button "Retour au menu" --ok-button "Valider" "Cette interface vous permet d'activer ou non un site. Cochez la case associée à un site pour l'activer et décochez-la pour le désactiver. Après les modifications effectuées et validées, vous devez redémarrer le service NGINX. ATTENTION: ce script ne vérifie pas la configuration des sites, en fonction de leurs configurations (port + domaine), deux sites peuvent rentrer en conflits, ce qui peut faire apparaitre des comportements indésirables." 20 78 15 "${listeSite[@]}" 3>&1 1>&2 2>&3)
 				 
 				exitstatus=$?
 				if [ $exitstatus = 0 ]; then
@@ -440,39 +431,39 @@ while [ -z $fin ]; do
 
 					for siteExiste in ${available[@]}
 					do
-						echo -e "\n\n\n\n************************\n\n\n"
+						# echo -e "\n\n\n\n************************\n\n\n"
 						
 						coche=""
 						for saisie in ${SiteManagement[@]}
 						do
 							saisie=${saisie:1:-1}
-							echo -e "Site existe: $siteExiste  --  Site à conf $saisie"
+							# echo -e "Site existe: $siteExiste  --  Site à conf $saisie"
 							if [[ -z $coche ]]; then
 								if [[ $siteExiste = $saisie ]]; then
 									coche="oui"
-									echo -e "$siteExiste - OUI\n"
+									# echo -e "$siteExiste - OUI\n"
 								fi
 							fi
 						done
 
-						echo	-e "$coche\n"
+						# echo	-e "$coche\n"
 
 
 						fichier="/etc/nginx/sites-enabled/${siteExiste}"
 
 						if [[ $coche = "oui" ]]; then
 							if [[ -e ${fichier} ]]; then
-								echo -e "Le fichier $siteExiste existe"
+								# echo -e "Le fichier $siteExiste existe"
 							else
-								echo -e "Le fichier $siteExiste n'existe pas. On le créer"
+								# echo -e "Le fichier $siteExiste n'existe pas. On le créer"
 								ln -s /etc/nginx/sites-available/${siteExiste} /etc/nginx/sites-enabled/${siteExiste}
 							fi
 						else
 							if [[ -e ${fichier} ]]; then
-								echo -e "Le fichier $siteExiste existe. On le supprime."
+								# echo -e "Le fichier $siteExiste existe. On le supprime."
 								rm "/etc/nginx/sites-enabled/${siteExiste}"
-							else
-								echo -e "Le fichier $siteExiste n'existe pas"
+							# else
+								# echo -e "Le fichier $siteExiste n'existe pas"
 							fi
 						fi
 					done
@@ -488,7 +479,7 @@ while [ -z $fin ]; do
 
 			while [[ $restartServiceLoop = "0" ]]; do
 				
-				restartService=$(whiptail --title "Redémarrage des services" --cancel-button Fermer --ok-button Valider  --menu "Choisissez un service à redémarrer" 20 70 6 \
+				restartService=$(whiptail --title "Redémarrage des services" --cancel-button "Retour au menu" --ok-button "Valider" --menu "Choisissez un service à redémarrer" 20 70 6 \
 					"1" "NGINX" \
 					"2" "PHP" \
 					"3" "MySQL" 3>&1 1>&2 2>&3)
@@ -519,3 +510,12 @@ done
 if [[ -e tmpFile ]]; then
 	rm -f tmpFile
 fi
+
+clear
+
+echo -e "\e[92m**************************************************"
+echo -e "    \e[92mScript par Jonathan BREA"
+echo -e "    \e[92mGitHib: https://github.com/Jonathanb-74"
+echo -e "    \e[92mSite web: https://jonathan-brea.fr"
+echo -e "\e[92m**************************************************"
+echo -e "\n\n\n"
