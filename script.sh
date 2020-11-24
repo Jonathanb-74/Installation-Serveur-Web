@@ -104,14 +104,14 @@ while [ -z $fin ]; do
 						echo -e "\t \e[5mUPDATE DES SOURCES"
 						echo -e "\e[92m*********************************************\e[0m"
 						apt update -y
-						read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+						read -p "Selectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"Autre"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Installation de: \e[5mJQ"
 						echo -e "\e[92m*********************************************\e[0m"
 						apt install -y jq curl
-						read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+						read -p "Selectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"NGINX"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
@@ -122,7 +122,7 @@ while [ -z $fin ]; do
 						rm "/etc/nginx/sites-available/*"
 						rm "/etc/nginx/sites-enabled/*"
 
-						read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+						read -p "Selectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"PHP-FPM"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
@@ -133,20 +133,20 @@ while [ -z $fin ]; do
 						echo -e "\t Informations de: \e[5mPHP-FPM"
 						echo -e "\e[92m*********************************************\e[0m"
 						php -v
-						read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+						read -p "Selectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"MariaDB-Server"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Installation de: \e[5mMariaDB-Server"
 						echo -e "\e[92m*********************************************\e[0m"
 						apt install -y mariadb-server
-						read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+						read -p "Selectionnez [Enter] pour continuer..."
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Configuration de: \e[5mMariaDB-Server"
 						echo -e "\e[92m*********************************************\e[0m"
 						mysql_secure_installation
-						read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+						read -p "Selectionnez [Enter] pour continuer..."
 					elif [[ $iInstall = '"phpMyAdmin"' ]]; then
 						if (whiptail --title "phpMyAdmin" --yesno --defaultno --no-button "Revenir au menu" --yes-button "Continuer"  "ATTENTION: avant d'installer phpMyAdmin, vous devez avoir installé \"mariadb-server\". Si vous n'avez PAS installé mariadb-server, sélectionnez \"Revenir au menu\" pour retourner au menu principale, sinon, sélectionnez \"Continuer\"" 12 60) then
 							clear
@@ -154,7 +154,7 @@ while [ -z $fin ]; do
 							echo -e "\t Installation de: \e[5mNphpMyAdmin"
 							echo -e "\e[92m*********************************************\e[0m"
 							apt install -y phpmyadmin
-							read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+							read -p "Selectionnez [Enter] pour continuer..."
 
 							clear
 							echo -e "\e[92m*********************************************\e[0m"
@@ -180,7 +180,7 @@ while [ -z $fin ]; do
 								sed -i "s/\[${recherche[$i]}\]/${remplace[$i]}/g" /etc/nginx/sites-available/phpmyadmin
 							done
 
-							read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+							read -p "Selectionnez [Enter] pour continuer..."
 						fi
 					fi
 				done
@@ -286,7 +286,7 @@ while [ -z $fin ]; do
 						if [[ -e "/etc/nginx/sites-available/$siteNom" && -r "/etc/nginx/sites-available/$siteNom" ]]; then
 							echo -e "Le fichier à bien été créer\n"
 
-							read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+							read -p "Selectionnez [Enter] pour continuer..."
 
 							echo -e "Modification du fichier...\n"
 
@@ -350,7 +350,7 @@ while [ -z $fin ]; do
 					fi
 				fi
 			fi
-			read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+			read -p "Selectionnez [Enter] pour continuer..."
 			;;
 		"5")
 			finConfSites="0"
@@ -479,7 +479,7 @@ while [ -z $fin ]; do
 					finConfSites="1"
 				fi
 
-				# read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+				# read -p "Selectionnez [Enter] pour continuer..."
 			done
 			;;
 		"6")
@@ -496,13 +496,13 @@ while [ -z $fin ]; do
 				if [ $exitstatus = 0 ]; then
 					if [[ $restartService = "1" ]]; then
 						service nginx restart
-						# read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+						# read -p "Selectionnez [Enter] pour continuer..."
 					elif [[ $restartService = "2" ]]; then
 						service php* restart
-						# read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+						# read -p "Selectionnez [Enter] pour continuer..."
 					elif [[ $restartService = "3" ]]; then
 						service mysql restart
-						# read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+						# read -p "Selectionnez [Enter] pour continuer..."
 					fi
 				else
 					restartServiceLoop="1"
@@ -516,6 +516,5 @@ while [ -z $fin ]; do
 done
 
 if [[ -e tmpFile ]]; then
-	echo -e "le fichier existe"
-	read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
+	rm -f tmpFile
 fi
