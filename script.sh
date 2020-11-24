@@ -46,24 +46,28 @@ while [ -z $fin ]; do
 			packetsInstal=("nginx" "php-fpm" "mariadb-server" "phpmyadmin")
 			packetsService=("nginx" "php7.*" "mysql" "phpmyadmin")
 
+			unset INSTALLED
+			unset STATUS
+			unset STATUS
+
 			for (( i = 0; i < 4; i++ ))
 			do
 			   : 
 				INSTALLED=$(dpkg -l | grep ${packetsInstal[$i]} >/dev/null && echo "OUI" || echo "NON")
 				STATUS=$(systemctl status ${packetsService[$i]} | grep "Active")
 				if [[ ${packetsInstal[$i]} = "phpmyadmin" ]]; then
-					status="$status> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n\n"
+					statusVar="$statusVar> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n\n"
 				elif [[ ${packetsInstal[$i]} = "php-fpm" ]]; then
 					#statements
 					VERSION=$(php -v | grep "PHP")
-					status="$status> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n    Status: ${STATUS}\n    Installé: ${VERSION}\n\n"
+					statusVar="$statusVar> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n    Status: ${STATUSVar}\n    Installé: ${VERSION}\n\n"
 				else
-					status="$status> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n    Status: ${STATUS}\n\n"
+					statusVar="$statusVar> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n    Status: ${STATUSVar}\n\n"
 				fi
       
 
 			done
-				echo -e "$status" > test_textbox
+				echo -e "$statusVar" > test_textbox
 
 			# echo "Welcome to Bash $BASH_VERSION" > test_textbox
 			#                  filename height width
@@ -100,14 +104,14 @@ while [ -z $fin ]; do
 						echo -e "\t \e[5mUPDATE DES SOURCES"
 						echo -e "\e[92m*********************************************\e[0m"
 						apt update -y
-						read -p "Selectionnez [Enter] pour continuer..."
+						read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 					elif [[ $iInstall = '"Autre"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Installation de: \e[5mJQ"
 						echo -e "\e[92m*********************************************\e[0m"
 						apt install -y jq curl
-						read -p "Selectionnez [Enter] pour continuer..."
+						read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 					elif [[ $iInstall = '"NGINX"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
@@ -118,7 +122,7 @@ while [ -z $fin ]; do
 						rm "/etc/nginx/sites-available/*"
 						rm "/etc/nginx/sites-enabled/*"
 
-						read -p "Selectionnez [Enter] pour continuer..."
+						read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 					elif [[ $iInstall = '"PHP-FPM"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
@@ -129,20 +133,20 @@ while [ -z $fin ]; do
 						echo -e "\t Informations de: \e[5mPHP-FPM"
 						echo -e "\e[92m*********************************************\e[0m"
 						php -v
-						read -p "Selectionnez [Enter] pour continuer..."
+						read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 					elif [[ $iInstall = '"MariaDB-Server"' ]]; then
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Installation de: \e[5mMariaDB-Server"
 						echo -e "\e[92m*********************************************\e[0m"
 						apt install -y mariadb-server
-						read -p "Selectionnez [Enter] pour continuer..."
+						read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 						clear
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Configuration de: \e[5mMariaDB-Server"
 						echo -e "\e[92m*********************************************\e[0m"
 						mysql_secure_installation
-						read -p "Selectionnez [Enter] pour continuer..."
+						read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 					elif [[ $iInstall = '"phpMyAdmin"' ]]; then
 						if (whiptail --title "phpMyAdmin" --yesno --defaultno --no-button "Revenir au menu" --yes-button "Continuer"  "ATTENTION: avant d'installer phpMyAdmin, vous devez avoir installé \"mariadb-server\". Si vous n'avez PAS installé mariadb-server, sélectionnez \"Revenir au menu\" pour retourner au menu principale, sinon, sélectionnez \"Continuer\"" 12 60) then
 							clear
@@ -150,7 +154,7 @@ while [ -z $fin ]; do
 							echo -e "\t Installation de: \e[5mNphpMyAdmin"
 							echo -e "\e[92m*********************************************\e[0m"
 							apt install -y phpmyadmin
-							read -p "Selectionnez [Enter] pour continuer..."
+							read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 
 							clear
 							echo -e "\e[92m*********************************************\e[0m"
@@ -176,7 +180,7 @@ while [ -z $fin ]; do
 								sed -i "s/\[${recherche[$i]}\]/${remplace[$i]}/g" /etc/nginx/sites-available/phpmyadmin
 							done
 
-							read -p "Selectionnez [Enter] pour continuer..."
+							read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 						fi
 					fi
 				done
@@ -282,7 +286,7 @@ while [ -z $fin ]; do
 						if [[ -e "/etc/nginx/sites-available/$siteNom" && -r "/etc/nginx/sites-available/$siteNom" ]]; then
 							echo -e "Le fichier à bien été créer\n"
 
-							read -p "Selectionnez [Enter] pour continuer..."
+							read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 
 							echo -e "Modification du fichier...\n"
 
@@ -346,7 +350,7 @@ while [ -z $fin ]; do
 					fi
 				fi
 			fi
-			read -p "Selectionnez [Enter] pour continuer..."
+			read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 			;;
 		"5")
 			finConfSites="0"
@@ -475,7 +479,7 @@ while [ -z $fin ]; do
 					finConfSites="1"
 				fi
 
-				# read -p "Selectionnez [Enter] pour continuer..."
+				# read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 			done
 			;;
 		"6")
@@ -492,13 +496,13 @@ while [ -z $fin ]; do
 				if [ $exitstatus = 0 ]; then
 					if [[ $restartService = "1" ]]; then
 						service nginx restart
-						# read -p "Selectionnez [Enter] pour continuer..."
+						# read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 					elif [[ $restartService = "2" ]]; then
 						service php* restart
-						# read -p "Selectionnez [Enter] pour continuer..."
+						# read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 					elif [[ $restartService = "3" ]]; then
 						service mysql restart
-						# read -p "Selectionnez [Enter] pour continuer..."
+						# read -p "\e[34mSelectionnez [Enter] pour continuer...\e[39m"
 					fi
 				else
 					restartServiceLoop="1"
