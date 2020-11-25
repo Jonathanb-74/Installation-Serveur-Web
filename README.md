@@ -31,7 +31,9 @@ Exécution du script
 
 ## Utilisation
 
-Lors de l’exécution du script, le menu principale s'affiche:![Menu principale](https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/img/docMenu.PNG)
+Lors de l’exécution du script, le menu principale s'affiche:
+
+![Menu principale](https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/img/docMenu.PNG)
 ### Informations
 
 Cette section affiches des informations sur le programme ainsi que son auteur.
@@ -45,7 +47,7 @@ Cette section indique différentes informations des services:
  - Sa version
 
 ![Aucun service installé](https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/img/docEtatsDesServices1.PNG)
-
+![Tous les services installée](https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/img/docEtatsDesServices2.PNG)
 ### Installation des services web
 
 Cette section permet d'installer les différents packages pour un serveur web ainsi que des packages nécessaires au bon fonctionnement du script.
@@ -93,3 +95,14 @@ Cette interface permet d'activé ou de désactivé des site web.
 ## Redémarrage des services
 
 Cette section vous permet de redémarrer chaque service de maniéré individuelle.
+
+## Contribuer
+
+Me contacter: contact@jonathan-brea.fr
+Mon site web: https://jonathan-brea.fr
+
+## Soutenir
+
+<p align="center">
+    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YRFF8YJ93HE68&source=url"><img src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donateCC_LG.gif" alt="GPL v3"></a>
+</p>
