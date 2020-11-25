@@ -48,7 +48,7 @@ while [ -z $fin ]; do
 
 			unset INSTALLED
 			unset STATUS
-			unset STATUS
+			unset statusVar
 
 			for (( i = 0; i < 4; i++ ))
 			do
@@ -60,9 +60,9 @@ while [ -z $fin ]; do
 				elif [[ ${packetsInstal[$i]} = "php-fpm" ]]; then
 					#statements
 					VERSION=$(php -v | grep "PHP")
-					statusVar="$statusVar> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n    Status: ${STATUSVar}\n    Installé: ${VERSION}\n\n"
+					statusVar="$statusVar> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n    Status: ${STATUS}\n    Version: ${VERSION}\n\n"
 				else
-					statusVar="$statusVar> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n    Status: ${STATUSVar}\n\n"
+					statusVar="$statusVar> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n    Status: ${STATUS}\n\n"
 				fi
       
 
@@ -209,7 +209,7 @@ while [ -z $fin ]; do
 						sitePort=$(whiptail --inputbox "Saisissez le port assosié à votre site. (Par défaut: 80)." --ok-button "Valider" --nocancel 8 39 --title "Port" 3>&1 1>&2 2>&3)
 						exitstatus=$?
 						if [ $exitstatus = 0 ]; then
-							siteDomaine=$(whiptail --inputbox "Saisissez le domaine assosié à votre site. Si vous n'en avez pas laissez la case vide." --ok-button "Valider" --nocancel 8 39 --title "Domaine" 3>&1 1>&2 2>&3)
+							siteDomaine=$(whiptail --inputbox "Saisissez le domaine assosié à votre site. Si vous n'en avez pas laissez la case vide." --ok-button "Valider" --nocancel 15 39 --title "Domaine" 3>&1 1>&2 2>&3)
 							exitstatus=$?
 							if [ $exitstatus = 0 ]; then
 								hoteVersionPHP=$(php -v | grep "PHP")
