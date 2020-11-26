@@ -128,7 +128,7 @@ while [ -z $fin ]; do
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Installation de: \e[5mPHP-FPM"
 						echo -e "\e[92m*********************************************\e[0m"
-						apt install -y php-fpm
+						apt install -y php-fpm php-ldap php-apcu php-xmlrpc php-cas
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Informations de: \e[5mPHP-FPM"
 						echo -e "\e[92m*********************************************\e[0m"
@@ -329,6 +329,7 @@ while [ -z $fin ]; do
 								echo -e "La page maintenance.html à été ajouter au repertoire"
 							fi
 							chown -R "$siteNom:www-data" "/home/$siteNom/html"
+							chmod -R 775 "/home/$siteNom/html"
 
 							if [[ $siteConfBDD = ok ]]; then	
 
