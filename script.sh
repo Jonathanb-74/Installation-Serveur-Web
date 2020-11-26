@@ -151,14 +151,14 @@ while [ -z $fin ]; do
 						if (whiptail --title "phpMyAdmin" --yesno --defaultno --no-button "Revenir au menu" --yes-button "Continuer"  "ATTENTION: avant d'installer phpMyAdmin, vous devez avoir installé \"mariadb-server\". Si vous n'avez PAS installé mariadb-server, sélectionnez \"Revenir au menu\" pour retourner au menu principale, sinon, sélectionnez \"Continuer\"" 12 60) then
 							clear
 							echo -e "\e[92m*********************************************\e[0m"
-							echo -e "\t Installation de: \e[5mNphpMyAdmin"
+							echo -e "\t Installation de: \e[5mphpMyAdmin"
 							echo -e "\e[92m*********************************************\e[0m"
 							apt install -y phpmyadmin
 							read -p "Sélectionnez [Enter] pour continuer..."
 
 							clear
 							echo -e "\e[92m*********************************************\e[0m"
-							echo -e "\t Configuration de: \e[5mNphpMyAdmin"
+							echo -e "\t Configuration de: \e[5mphpMyAdmin"
 							echo -e "\e[92m*********************************************\e[0m"
 
 							getURL "nginx_conf_pma"
@@ -179,6 +179,8 @@ while [ -z $fin ]; do
 								echo "sed -i 's/\[${recherche[$i]}\]/${remplace[$i]}/g' /etc/nginx/sites-available/phpmyadmin"
 								sed -i "s/\[${recherche[$i]}\]/${remplace[$i]}/g" /etc/nginx/sites-available/phpmyadmin
 							done
+
+							mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'phpmyadmin'@'localhost' WITH GRANT OPTION;"
 
 							read -p "Sélectionnez [Enter] pour continuer..."
 						fi
