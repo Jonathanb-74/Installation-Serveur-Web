@@ -150,13 +150,14 @@ while [ -z $fin ]; do
 							fi
 							
 							hoteVersionPHP=$(php -v | grep "PHP")
+							hoteVersionPHP=${hoteVersionPHP:4:3}
 
 							recherche=( "pma_port" "pma_php_version" )
 							remplace=( "$pmaPort" "$hoteVersionPHP" )
 
 							for (( i = 0; i < 4; i++ )); do
-								echo "sed -i 's/\[${recherche[$i]}\]/${remplace[$i]}/g' /etc/nginx/sites-available/phpmyadmin"
-								sed -i "s/\[${recherche[$i]}\]/${remplace[$i]}/g" /etc/nginx/sites-available/phpmyadmin
+								# echo "sed -i 's/\[${recherche[$i]}\]/${remplace[$i]}/g' /etc/nginx/sites-available/phpmyadmin"
+								sed -i "s/\[${recherche[$i]}\]/${remplace[$i]}/g" "/etc/nginx/sites-available/phpmyadmin"
 							done
 
 							mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'phpmyadmin'@'localhost' WITH GRANT OPTION;"
