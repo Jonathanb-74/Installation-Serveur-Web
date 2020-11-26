@@ -1,15 +1,11 @@
 #!/bin/bash
 
-# $erreurSelection=0
-
 if [[ $(whoami) != 'root' ]]; then
 	whiptail --title "ATTENTION" --msgbox "Certaines fonctionnalitées de ce script nécéssite les droits root. Pour profiter de toutes les fonctionnalitées de ce script, executez le avec la commande 'sudo' ou avec l'utilisateur root" 11 78
 fi
 
 
 while [ -z $fin ]; do
-
-	# clear
 
 	OPTION=$(whiptail --title "MENU" --cancel-button "Quiter" --ok-button Valider  --menu "Choisissez une action" 20 70 6 \
 	"1" "Informations" \
@@ -21,28 +17,16 @@ while [ -z $fin ]; do
 	 
 	getURL(){
 		if [[ -n $1 ]]; then
-			# templateURL="ok"
 			templateURL=$(curl -s https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/url.json | jq .$1)
 			templateURL=${templateURL:1:-1}
 		fi
 	}
-	# siteON(){
-	# 	if [[ -n $1 ]]; then
-			
-	# 	fi
-	# }
-	# siteOFF(){
-	# 	if [[ -n $1 ]]; then
-			
-	# 	fi
-	# }
 
 	case $OPTION in
 		"1")
 			whiptail --title "INFORMATIONS" --ok-button "Retour au menu" --msgbox "Script par Jonathan BREA. \nGitHub: https://github.com/Jonathanb-74 \nSite web: https://jonathan-brea.fr" 8 78
 			;;
 		"2")
-			# clear
 			packetsInstal=("nginx" "php-fpm" "mariadb-server" "phpmyadmin")
 			packetsService=("nginx" "php7.*" "mysql" "phpmyadmin")
 
@@ -58,7 +42,6 @@ while [ -z $fin ]; do
 				if [[ ${packetsInstal[$i]} = "phpmyadmin" ]]; then
 					statusVar="$statusVar> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n\n"
 				elif [[ ${packetsInstal[$i]} = "php-fpm" ]]; then
-					#statements
 					VERSION=$(php -v | grep "PHP")
 					statusVar="$statusVar> ${packetsInstal[$i]} \n    Installé: ${INSTALLED}\n    Status: ${STATUS}\n    Version: ${VERSION}\n\n"
 				else
@@ -67,14 +50,10 @@ while [ -z $fin ]; do
       
 
 			done
-				echo -e "$statusVar" > tmpFile
+				
+			echo -e "$statusVar" > tmpFile
 
-			# echo "Welcome to Bash $BASH_VERSION" > tmpFile
-			#                  filename height width
 			whiptail --title "Etats des services" --ok-button "Retour au menu" --textbox tmpFile 25 80
-			
-			# echo -e "\n"
-			# read -p "Sélectionnez [Enter] pour retourner au menu..."
 			;;
 		"3")
 
@@ -93,7 +72,6 @@ while [ -z $fin ]; do
 				packetsInstallation2=( "NGINX" "PHP-FPM" )
 
 				echo $packetsInstallation
-				# echo $packetsInstallation2
 
 				for iInstall in ${packetsInstallation[@]}
 				do
@@ -177,7 +155,6 @@ while [ -z $fin ]; do
 							remplace=( "$pmaPort" "$hoteVersionPHP" )
 
 							for (( i = 0; i < 4; i++ )); do
-								#statements
 								echo "sed -i 's/\[${recherche[$i]}\]/${remplace[$i]}/g' /etc/nginx/sites-available/phpmyadmin"
 								sed -i "s/\[${recherche[$i]}\]/${remplace[$i]}/g" /etc/nginx/sites-available/phpmyadmin
 							done
@@ -258,15 +235,6 @@ while [ -z $fin ]; do
 						fi
 					fi
 				fi
-				# Nom du site = $siteNom
-				# Mot de passe = $siteMDP
-				# Mot de passe = $siteMDP2
-				# Domaine = $siteDomaine
-				# Version de PHP = $siteVersionPHP
-				# BDD - Nom = $siteBddNom
-				# BDD - MDP = $siteBddMDP
-				# BDD - MDP = $siteBddMDP2
-				# BDD - Connexion = $siteBddConnexion
 
 				if [[ $siteConf = ok ]]; then
 
@@ -282,8 +250,6 @@ while [ -z $fin ]; do
 
 					else
 						getURL "nginx_conf_all"
-
-						# echo $templateURL
 
 						wget $templateURL -O "/etc/nginx/sites-available/$siteNom"
 
@@ -305,7 +271,6 @@ while [ -z $fin ]; do
 							remplace=( "$sitePort" "$siteNom" "$siteDomaine" "$siteVersionPHP" )
 
 							for (( i = 0; i < 4; i++ )); do
-								#statements
 								echo "sed -i 's/\[${recherche[$i]}\]/${remplace[$i]}/g' /etc/nginx/sites-available/$siteNom"
 								sed -i "s/\[${recherche[$i]}\]/${remplace[$i]}/g" /etc/nginx/sites-available/$siteNom
 							done
@@ -317,7 +282,7 @@ while [ -z $fin ]; do
 							fi
 
 							useradd -m -p $(echo "$siteMDP" | openssl passwd -1 -stdin) -s /bin/bash -g "www-data" -G "scriptManagement" "$siteNom"
-							# adduser "$siteNom" "www-data"
+
 							if [[ -e "/home/$siteNom" ]]; then
 								echo -e "Le rep home à bien été créer"
 							fi
@@ -398,10 +363,7 @@ while [ -z $fin ]; do
 				for i in "${available[@]}"
 				do
 					: 
-					# echo $i
-					# echo ${enabled[$1]}
 					if [[ $(contains "${enabled[@]}" "$i") == "y" ]]; then
-						# echo "$i est activé !"
 						listeSite[$listeID]="$i"
 						echo ${listeSite[$listeID]}
 						(( listeID++ ))
@@ -425,7 +387,6 @@ while [ -z $fin ]; do
 					echo $listID
 				done
 
-				# SiteManagement=$(whiptail --title "Gestion des sites" --checklist "Cette interface vous permet d'activer " 20 90 15  3>&1 1>&2 2>&3)
 				SiteManagement=$(whiptail --title "Gestion des sites" --cancel-button "Retour au menu" --ok-button "Valider" --checklist \
 					"Cette interface vous permet d'activer ou non un site. Cochez la case associée à un site pour l'activer et décochez-la pour le désactiver. Après les modifications effectuées et validées, vous devez redémarrer le service NGINX. ATTENTION: ce script ne vérifie pas la configuration des sites, en fonction de leurs configurations (port + domaine), deux sites peuvent rentrer en conflits, ce qui peut faire apparaitre des comportements indésirables." 18 100 6 \
 					"${listeSite[@]}" 3>&1 1>&2 2>&3)
@@ -433,46 +394,33 @@ while [ -z $fin ]; do
 				exitstatus=$?
 				if [ $exitstatus = 0 ]; then
 
-					# echo ${SiteManagement[@]}
-
 					clear
 
 					for siteExiste in ${available[@]}
 					do
-						# echo -e "\n\n\n\n************************\n\n\n"
 						
 						coche=""
 						for saisie in ${SiteManagement[@]}
 						do
 							saisie=${saisie:1:-1}
-							# echo -e "Site existe: $siteExiste  --  Site à conf $saisie"
 							if [[ -z $coche ]]; then
 								if [[ $siteExiste = $saisie ]]; then
 									coche="oui"
-									# echo -e "$siteExiste - OUI\n"
 								fi
 							fi
 						done
-
-						# echo	-e "$coche\n"
-
 
 						fichier="/etc/nginx/sites-enabled/${siteExiste}"
 
 						if [[ $coche = "oui" ]]; then
 							if [[ -e ${fichier} ]]; then
-								# echo -e "Le fichier $siteExiste existe"
 								echo -e ""
 							else
-								# echo -e "Le fichier $siteExiste n'existe pas. On le créer"
 								ln -s /etc/nginx/sites-available/${siteExiste} /etc/nginx/sites-enabled/${siteExiste}
 							fi
 						else
 							if [[ -e ${fichier} ]]; then
-								# echo -e "Le fichier $siteExiste existe. On le supprime."
 								rm "/etc/nginx/sites-enabled/${siteExiste}"
-							# else
-								# echo -e "Le fichier $siteExiste n'existe pas"
 							fi
 						fi
 					done
@@ -480,7 +428,6 @@ while [ -z $fin ]; do
 					finConfSites="1"
 				fi
 
-				# read -p "Sélectionnez [Enter] pour continuer..."
 			done
 			;;
 		"6")
@@ -497,13 +444,10 @@ while [ -z $fin ]; do
 				if [ $exitstatus = 0 ]; then
 					if [[ $restartService = "1" ]]; then
 						service nginx restart
-						# read -p "Sélectionnez [Enter] pour continuer..."
 					elif [[ $restartService = "2" ]]; then
 						service php* restart
-						# read -p "Sélectionnez [Enter] pour continuer..."
 					elif [[ $restartService = "3" ]]; then
 						service mysql restart
-						# read -p "Sélectionnez [Enter] pour continuer..."
 					fi
 				else
 					restartServiceLoop="1"
