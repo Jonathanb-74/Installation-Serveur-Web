@@ -106,7 +106,7 @@ while [ -z $fin ]; do
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Installation de: \e[5mPHP-FPM"
 						echo -e "\e[92m*********************************************\e[0m"
-						apt install -y php-fpm php-ldap php-apcu php-xmlrpc php-cas
+						apt install -y php-fpm php-ldap php-apcu php-xmlrpc php-cas php-intl 
 						echo -e "\e[92m*********************************************\e[0m"
 						echo -e "\t Informations de: \e[5mPHP-FPM"
 						echo -e "\e[92m*********************************************\e[0m"
