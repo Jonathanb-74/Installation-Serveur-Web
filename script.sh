@@ -170,6 +170,8 @@ while [ -z $fin ]; do
 							if [ $exitstatus != 0 ]; then
 							    pmaPort="8080"
 							fi
+							
+							hoteVersionPHP=$(php -v | grep "PHP")
 
 							recherche=( "pma_port" "pma_php_version" )
 							remplace=( "$pmaPort" "$hoteVersionPHP" )
