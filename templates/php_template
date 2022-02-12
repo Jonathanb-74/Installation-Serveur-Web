@@ -1,7 +1,7 @@
-[[nom_site]]
-user = [nom_site]
-group = [nom_site]
-listen = /var/run/php5-fpm-[nom_site].sock
+[[conf_nom_site]]
+user = [conf_nom_site]
+group = [conf_nom_site]
+listen = /var/run/php[conf_php_version]-fpm-[conf_nom_site].sock
 listen.owner = www-data
 listen.group = www-data
 php_admin_value[disable_functions] = exec,passthru,shell_exec,system

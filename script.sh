@@ -17,7 +17,7 @@ while [ -z $fin ]; do
 	 
 	getURL(){
 		if [[ -n $1 ]]; then
-			templateURL=$(curl -s https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/url.json | jq .$1)
+			templateURL=$(curl -s https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/dev/url.json | jq .$1)
 			templateURL=${templateURL:1:-1}
 		fi
 	}
@@ -288,8 +288,8 @@ while [ -z $fin ]; do
 
 							echo -e "Modification du fichier NGINX...\n"
 
-							recherche=( "nom_site" )
-							remplace=( "$siteNom" )
+							recherche=( "conf_nom_site", "conf_php_version" )
+							remplace=( "$siteNom", "$siteVersionPHP" )
 
 							for (( i = 0; i < 4; i++ )); do
 								echo "sed -i 's/\[${recherche[$i]}\]/${remplace[$i]}/g' /etc/php/$hoteVersionPHP/fpm/pool.d/$siteNom.conf"
@@ -483,11 +483,11 @@ while [ -z $fin ]; do
 	esac
 done
 
-if [[ -e tmpFile ]]; then
-	rm -f tmpFile
-fi
+# if [[ -e tmpFile ]]; then
+# 	rm -f tmpFile
+# fi
 
-clear
+# clear
 
 echo -e "\e[92m**************************************************\e[39m"
 echo -e "    \e[92mScript par \e[39mJonathan BREA"
