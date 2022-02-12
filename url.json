@@ -1,5 +1,6 @@
 {
 	"nginx_conf_all": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/templates/nginx_template",
 	"nginx_conf_pma": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/templates/phpmyadmin_template",
-	"html_maintenance": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/pages/maintenance.html"
+	"html_maintenance": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/pages/maintenance.html",
+	"php_conf": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/templates/php_template"
 }
