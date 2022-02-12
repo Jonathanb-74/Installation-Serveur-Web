@@ -1,6 +1,6 @@
 {
-	"nginx_conf_all": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/dev/templates/templates/nginx_template",
-	"nginx_conf_pma": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/dev/templates/templates/phpmyadmin_template",
-	"html_maintenance": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/dev/templates/pages/maintenance.html",
-	"php_conf": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/dev/templates/php_template"
+	"nginx_conf_all": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/dev/templates/nginx_template",
+	"nginx_conf_pma": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/dev/templates/phpmyadmin_template",
+	"php_conf": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/dev/templates/php_template",
+	"html_maintenance": "https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/dev/pages/maintenance.html"
 }
