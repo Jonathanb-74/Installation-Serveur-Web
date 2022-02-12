@@ -286,12 +286,12 @@ while [ -z $fin ]; do
 								sed -i "s/\[${recherche[$i]}\]/${remplace[$i]}/g" /etc/nginx/sites-available/$siteNom
 							done
 
-							echo -e "Modification du fichier NGINX...\n"
+							echo -e "\n\nModification du fichier PHP...\n"
 
 							php_recherche=( "conf_nom_site", "conf_php_version" )
 							php_remplace=( "$siteNom", "$siteVersionPHP" )
 
-							for (( i = 0; i < 4; i++ )); do
+							for (( i = 0; i < 2; i++ )); do
 								echo "sed -i 's/\[${php_recherche[$i]}\]/${php_remplace[$i]}/g' /etc/php/$hoteVersionPHP/fpm/pool.d/$siteNom.conf"
 								sed -i 's/\[${php_recherche[$i]}\]/${php_remplace[$i]}/g' "/etc/php/$hoteVersionPHP/fpm/pool.d/$siteNom.conf"
 							done
