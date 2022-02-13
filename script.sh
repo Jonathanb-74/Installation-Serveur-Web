@@ -17,7 +17,7 @@ while [ -z $fin ]; do
 	 
 	getURL(){
 		if [[ -n $1 ]]; then
-			templateURL=$(curl -s https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/url.json | jq .$1)
+			templateURL=$(curl -H "Cache-Control: no-cache" -s https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/dev/url.json | jq .$1)
 			templateURL=${templateURL:1:-1}
 		fi
 	}
@@ -241,7 +241,12 @@ while [ -z $fin ]; do
 
 					if [[ -e "/etc/nginx/sites-available/$siteNom" ]]; then
 
-						echo -e "Le fichier  existe déjà !"
+						echo -e "Le fichier de configuration NGINX existe déjà !"
+						echo -e "Fin du processus d'installation du site"
+
+					elif [[ -e "/etc/php/$hoteVersionPHP/fpm/pool.d/$siteNom.conf" ]]; then
+
+						echo -e "Le fichier de configuration PHP existe déjà !"
 						echo -e "Fin du processus d'installation du site"
 
 					elif [[ -n $(grep "$siteNom" /etc/passwd) ]]; then
@@ -250,16 +255,21 @@ while [ -z $fin ]; do
 						echo -e "Fin du processus d'installation du site"
 
 					else
+						
 						getURL "nginx_conf_all"
-
 						wget $templateURL -O "/etc/nginx/sites-available/$siteNom"
 
-						if [[ -e "/etc/nginx/sites-available/$siteNom" && -r "/etc/nginx/sites-available/$siteNom" ]]; then
-							echo -e "Le fichier à bien été créer\n"
+						getURL "php_conf"
+						wget $templateURL -O "/etc/php/$hoteVersionPHP/fpm/pool.d/$siteNom.conf"
+
+						if [[ -e "/etc/nginx/sites-available/$siteNom" && -r "/etc/nginx/sites-available/$siteNom" &&  -e "/etc/php/$hoteVersionPHP/fpm/pool.d/$siteNom.conf" && -r "/etc/php/$hoteVersionPHP/fpm/pool.d/$siteNom.conf" ]]; then
+							
+							echo -e "Le fichier de configuration NGINX à bien été créer\n"
+							echo -e "Le fichier de configuration PHP à bien été créer\n"
 
 							read -p "Sélectionnez [Enter] pour continuer..."
 
-							echo -e "Modification du fichier...\n"
+							echo -e "Modification du fichier NGINX...\n"
 
 							if [[ -z $sitePort ]]; then
 								sitePort="80"
@@ -276,13 +286,25 @@ while [ -z $fin ]; do
 								sed -i "s/\[${recherche[$i]}\]/${remplace[$i]}/g" /etc/nginx/sites-available/$siteNom
 							done
 
-							testGroupManagement=$(getent group scriptManagement || { echo "0"; })
+							echo -e "\n\nModification du fichier PHP...\n"
 
-							if [[ $testGroupManagement = 0 ]]; then
-								groupadd "scriptManagement"
-							fi
+							php_recherche=( "conf_nom_site" "conf_php_version" )
+							php_remplace=( "$siteNom" "$siteVersionPHP" )
 
-							useradd -m -p $(echo "$siteMDP" | openssl passwd -1 -stdin) -s /bin/bash -g "www-data" -G "scriptManagement" "$siteNom"
+							for (( i = 0; i < 2; i++ )); do
+								echo "sed -i 's/\[${php_recherche[$i]}\]/${php_remplace[$i]}/g' /etc/php/$hoteVersionPHP/fpm/pool.d/$siteNom.conf"
+								sed -i "s/\[${php_recherche[$i]}\]/${php_remplace[$i]}/g" /etc/php/$hoteVersionPHP/fpm/pool.d/$siteNom.conf
+							done
+
+							# testGroupManagement=$(getent group scriptManagement || { echo "0"; })
+
+							# if [[ $testGroupManagement = 0 ]]; then
+							# 	groupadd "scriptManagement"
+							# fi
+
+							groupadd "$siteNom"
+							# useradd -m -p $(echo "$siteMDP" | openssl passwd -1 -stdin) -s /bin/bash -g "$siteNom" -G "scriptManagement" "$siteNom"
+							useradd -m -p $(echo "$siteMDP" | openssl passwd -1 -stdin) -s /bin/bash -g "$siteNom" "$siteNom"
 
 							if [[ -e "/home/$siteNom" ]]; then
 								echo -e "Le rep home à bien été créer"
@@ -298,7 +320,9 @@ while [ -z $fin ]; do
 							if [[ -e "/home/$siteNom/html/maintenance.html" ]]; then
 								echo -e "La page maintenance.html à été ajouter au repertoire"
 							fi
-							chown -R "$siteNom:www-data" "/home/$siteNom/html"
+
+							echo -e "\n\nApplication des droits\n"
+							chown -R "$siteNom:$siteNom" "/home/$siteNom/html"
 							chmod -R 775 "/home/$siteNom/html"
 
 							if [[ $siteConfBDD = ok ]]; then	
@@ -461,11 +485,11 @@ while [ -z $fin ]; do
 	esac
 done
 
-if [[ -e tmpFile ]]; then
-	rm -f tmpFile
-fi
+# if [[ -e tmpFile ]]; then
+# 	rm -f tmpFile
+# fi
 
-clear
+# clear
 
 echo -e "\e[92m**************************************************\e[39m"
 echo -e "    \e[92mScript par \e[39mJonathan BREA"
