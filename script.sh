@@ -17,7 +17,7 @@ while [ -z $fin ]; do
 	 
 	getURL(){
 		if [[ -n $1 ]]; then
-			templateURL=$(curl -H "Cache-Control: no-cache" -s https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/dev/url.json | jq .$1)
+			templateURL=$(curl -H "Cache-Control: no-cache" -s https://raw.githubusercontent.com/Jonathanb-74/Installation-Serveur-Web/master/url.json | jq .$1)
 			templateURL=${templateURL:1:-1}
 		fi
 	}
