@@ -293,7 +293,7 @@ while [ -z $fin ]; do
 
 							for (( i = 0; i < 2; i++ )); do
 								echo "sed -i 's/\[${php_recherche[$i]}\]/${php_remplace[$i]}/g' /etc/php/$hoteVersionPHP/fpm/pool.d/$siteNom.conf"
-								sed -i "s/\[${recherche[$i]}\]/${remplace[$i]}/g" /etc/php/$hoteVersionPHP/fpm/pool.d/$siteNom.conf
+								sed -i "s/\[${php_recherche[$i]}\]/${php_remplace[$i]}/g" /etc/php/$hoteVersionPHP/fpm/pool.d/$siteNom.conf
 							done
 
 							# testGroupManagement=$(getent group scriptManagement || { echo "0"; })
