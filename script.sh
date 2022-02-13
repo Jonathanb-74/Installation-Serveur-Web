@@ -320,7 +320,10 @@ while [ -z $fin ]; do
 							if [[ -e "/home/$siteNom/html/maintenance.html" ]]; then
 								echo -e "La page maintenance.html à été ajouter au repertoire"
 							fi
-							# chown -R "$siteNom:www-data" "/home/$siteNom/html"
+
+							echo -e "\n\nApplication des droits\n"
+							echo "chown -R $siteNom:$siteNom /home/$siteNom/html"
+							chown -R "$siteNom:$siteNom" "/home/$siteNom/html"
 							# chmod -R 775 "/home/$siteNom/html"
 
 							if [[ $siteConfBDD = ok ]]; then	
