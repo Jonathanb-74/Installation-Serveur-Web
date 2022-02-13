@@ -322,9 +322,8 @@ while [ -z $fin ]; do
 							fi
 
 							echo -e "\n\nApplication des droits\n"
-							echo "chown -R $siteNom:$siteNom /home/$siteNom/html"
 							chown -R "$siteNom:$siteNom" "/home/$siteNom/html"
-							# chmod -R 775 "/home/$siteNom/html"
+							chmod -R 775 "/home/$siteNom/html"
 
 							if [[ $siteConfBDD = ok ]]; then	
 
